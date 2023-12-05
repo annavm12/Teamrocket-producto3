@@ -2,13 +2,15 @@ import React from 'react'
 import { TouchableOpacity, Image } from 'react-native'
 
 import styles from './screenheader.style'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 
-const ScreenHeaderBtn = () => {
+
+const ScreenHeaderBtn = ({ iconUrl, dimension, handlerPress }) => {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity style={styles.btnContainer} onPress={handlerPress}>
       <Image
         source={iconUrl}
+        resizeMode="cover"
+        style={styles.btnImg(dimension)}
       />
     </TouchableOpacity>
   )
