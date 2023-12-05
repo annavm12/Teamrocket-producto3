@@ -21,6 +21,14 @@ const Welcome = () => {
         <Text style={styles.userName}>HELLO TEAMROCKET</Text>
         <Text style={styles.welcomeMessage}>Haciendo PRUEBAS</Text>
       </View>
+
+      <View style={styles.searchContainer}>
+        <View style={styles.searchWrapper}>
+          <TextInput style={styles.searchInput}>
+
+          </TextInput>
+        </View>
+      </View>
     </View>
   )
 }
