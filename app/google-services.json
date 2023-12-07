@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "977220676190",
+    "firebase_url": "https://team-rocket-prod2-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "team-rocket-prod2",
+    "storage_bucket": "team-rocket-prod2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977220676190:android:8296050c7aa19e3a9f22cf",
+        "android_client_info": {
+          "package_name": "teamrocket.prod3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA57ULl954TLp06Hh3M3B1SICmkHett3Js"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
