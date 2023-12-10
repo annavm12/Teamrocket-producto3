@@ -1,36 +1,54 @@
-import { useState } from 'react'
-import { 
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  FlatLis,
-} from 'react-native'
-import { useRouter } from 'expo-router'
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, ScrollView, StyleSheet } from 'react-native';
 
-import styles from './welcome.style'
-import { icons, SIZES } from '../../../constants'
+const MainPage = () => {
+  const [showForm, setShowForm] = useState(false);
+  // Define el estado y los manejadores para tus campos de formulario aquí
 
-const Welcome = () => {
-  const router = useRouter();
+  // Funciones para manejar eventos, como onTimeSearched, onCitySearched, etc.
 
   return (
-    <View>
-      <View style={styles.container}>
-        <Text style={styles.userName}>PATATA</Text>
-        <Text style={styles.welcomeMessage}>Haciendo PRUEBAS</Text>
+    <ScrollView style={styles.container}>
+      <Text style={styles.header}>Mi viaje por España</Text>
+      
+      {/* Filtros y botón para agregar un nuevo día */}
+      <View style={styles.filterAddContainer}>
+        {/* Implementa tu componente de búsqueda aquí */}
+        <Button title="Agregar nuevo día" onPress={() => setShowForm(!showForm)} />
       </View>
 
-      <View style={styles.searchContainer}>
-        <View style={styles.searchWrapper}>
-          <TextInput style={styles.searchInput}>
-
-          </TextInput>
+      {/* Formulario desplegable */}
+      {showForm && (
+        <View style={styles.formDay}>
+          {/* Implementa tu formulario aquí */}
         </View>
-      </View>
-    </View>
-  )
-}
+      )}
 
-export default Welcome
+      {/* Tus componentes de días y detalles */}
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+    // Estilos adicionales
+  },
+  header: {
+    fontSize: 22,
+    textAlign: 'center',
+    // Estilos adicionales
+  },
+  filterAddContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // Estilos adicionales
+  },
+  formDay: {
+    // Estilos para tu formulario
+  },
+  // Más estilos según sea necesario
+});
+
+export default MainPage;
