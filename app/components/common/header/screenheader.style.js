@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { COLORS, SIZES } from "../../../constants";
+import { COLORS, SIZES } from "../../../app/constants";
 
 const styles = StyleSheet.create({
   btnContainer: {
