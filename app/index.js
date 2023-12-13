@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Picker, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-//import flatList from './components/flatList'; 
+import FlatList from './components/flatList.js'; 
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -63,7 +63,7 @@ const Home = () => {
         <Text style={styles.buttonText}>Crear Nuevo Día</Text>
       </TouchableOpacity>
 
-     <flatList
+      <FlatList
         data={data}
         renderItem={renderCard}
         keyExtractor={keyExtractor}

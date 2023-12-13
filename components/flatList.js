@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, WebViewHTMLAttributes, TextareaHTMLAttributes, StyleSheet} from "react-native";
 
-const flatList = ({ data, renderItem, keyExtractor }) => {
+const FlatList = ({ data, renderItem, keyExtractor }) => {
     return (
         <View style = {styles.container}>
             <FlatList
@@ -19,4 +19,4 @@ const styles = StyleSheet.create({
     },
   });
 
-export default flatList;
+export default FlatList;
