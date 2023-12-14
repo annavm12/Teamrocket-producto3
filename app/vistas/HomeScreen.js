@@ -1,34 +1,45 @@
 // Homescreen.js
-import React, { useEffect, useState } from 'react';
-import { View, Text, Picker, TextInput, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-import { useNavigation } from '@react-navigation/native';
-import FlatListDias from '../components/flatList';
-import Formulario from '../components/formulario';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import firebase from "firebase/app";
+import "firebase/firestore";
+import { useNavigation } from "@react-navigation/native";
+import FlatListDias from "../components/flatList";
+import Formulario from "../components/formulario";
 
 const Homescreen = () => {
+  const navigation = useNavigation();
+  const [formularioVisible, setFormularioVisible] = useState(false);
+  const handleCrearNuevoDia = () => {
+    setFormularioVisible(true);
+  };
 
-    const navigation = useNavigation();
-    const [formularioVisible, setFormularioVisible] = useState(false);
-    const handleCrearNuevoDia = () => {
-        setFormularioVisible(true);
-      };
-    
-      const handleCloseFormulario = () => {
-        setFormularioVisible(false);
-      };
+  const handleCloseFormulario = () => {
+    setFormularioVisible(false);
+  };
 
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchDataFromFirebase = async () => {
       try {
-        const querySnapshot = await firebase.firestore().collection('').get();
-        const fetchedData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const querySnapshot = await firebase.firestore().collection("").get();
+        const fetchedData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
         setData(fetchedData);
       } catch (error) {
-        console.error('Error al obtener datos de Firebase:', error);
+        console.error("Error al obtener datos de Firebase:", error);
       }
     };
 
@@ -41,15 +52,12 @@ const Homescreen = () => {
       <Text style={styles.title}>Mi Viaje por España</Text>
       <Image
         style={styles.image}
-        source={require('../assets/images/logo.png')}
+        source={require("../assets/images/logo.png")}
       />
 
       <View style={styles.searchContainer}>
         <Text>Buscar: </Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Escribe aquí"
-        />
+        <TextInput style={styles.input} placeholder="Escribe aquí" />
         <Picker>
           <Picker.Item label="Opción 1" value="opcion1" />
           <Picker.Item label="Opción 2" value="opcion2" />
@@ -64,24 +72,23 @@ const Homescreen = () => {
       <Formulario visible={formularioVisible} onClose={handleCloseFormulario} />
 
       <FlatListDias></FlatListDias>
-        
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   searchContainer: {
     marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   image: {
     width: 100,
@@ -97,18 +104,18 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
-    backgroundColor: 'blue',
+    backgroundColor: "blue",
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
   card: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 8,
     padding: 16,
     marginVertical: 8,

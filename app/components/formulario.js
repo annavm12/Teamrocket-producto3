@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState } from "react";
+import {
+  Alert,
+  Modal,
+  StyleSheet,
+  Text,
+  Pressable,
+  View,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 
 const Formulario = ({ visible, onClose }) => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
 
   const handleInputChange = (text) => {
     setInputValue(text);
@@ -10,7 +19,7 @@ const Formulario = ({ visible, onClose }) => {
 
   const handleSubmit = () => {
     // Aquí puedes realizar acciones con el valor del formulario
-    Alert.alert('Formulario enviado', `Valor ingresado: ${inputValue}`);
+    Alert.alert("Formulario enviado", `Valor ingresado: ${inputValue}`);
     // Cerrar el modal
     onClose();
   };
@@ -24,23 +33,35 @@ const Formulario = ({ visible, onClose }) => {
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>Formulario</Text>
+          <Text style={styles.modalText}>FORMULARIO</Text>
           <TextInput
             style={styles.input}
             placeholder="Ingresa tu valor"
             value={inputValue}
             onChangeText={handleInputChange}
           />
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleSubmit}
-          >
+          <TextInput
+            style={styles.input}
+            placeholder="Ciudad"
+            value={inputValue}
+            onChangeText={handleInputChange}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Descripcion"
+            value={inputValue}
+            onChangeText={handleInputChange}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Actividades"
+            value={inputValue}
+            onChangeText={handleInputChange}
+          />
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Enviar</Text>
           </TouchableOpacity>
-          <Pressable
-            style={styles.closeButton}
-            onPress={onClose}
-          >
+          <Pressable style={styles.closeButton} onPress={onClose}>
             <Text style={styles.closeButtonText}>Cerrar</Text>
           </Pressable>
         </View>
@@ -52,17 +73,17 @@ const Formulario = ({ visible, onClose }) => {
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 22,
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -73,40 +94,40 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     marginBottom: 20,
     paddingHorizontal: 10,
-    width: '100%',
+    width: "100%",
   },
   button: {
-    backgroundColor: 'blue',
+    backgroundColor: "blue",
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
-    width: '100%',
+    alignItems: "center",
+    width: "100%",
     marginBottom: 10,
   },
   buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
   closeButton: {
-    backgroundColor: 'red',
+    backgroundColor: "red",
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
-    width: '100%',
+    alignItems: "center",
+    width: "100%",
   },
   closeButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
 });
 
