@@ -3,6 +3,7 @@ import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput, TouchableOp
 import firestore from '@react-native-firebase/firestore';
 import {bd, app } from '../utils/Firebase';
 
+
 const Formulario = ({ visible, onClose }) => {
   const [city, setCity] = useState('');
   const [dayNumber, setDayNumber] = useState('');
