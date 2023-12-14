@@ -1,9 +1,9 @@
-import react from "react";
-import Homescreen from "./vistas/HomeScreen";
+import * as React from "react";
+import Navigation from "./components/navegador";
 
 const App = () => {
     return (
-      <Homescreen />
+          <Navigation/>
     );
   };
   
