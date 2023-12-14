@@ -1,13 +1,56 @@
 {
   "expo": {
-    "scheme": "acme",
-    "web": {
-      "bundler": "metro"
+    "name": "Viajes",
+    "slug": "main",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./app/assets/icon.png",
+    "splash": {
+      "image": "./app/assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
     },
-    "plugins": [
-      "expo-router"
-    ],
-    "name": "PRODUCTO_3",
-    "slug": "PRODUCTO_3"
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.TeamRocket.viajes",
+      "infoPlist": {
+        "CFBundleURLTypes": [{
+          "CFBundleURLSchemes": ["myapp"]
+        }]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./app/assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.TeamRocket.viajes",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "www.viajes.com",
+              "pathPrefix": "/path"
+            },
+            {
+              "scheme": "myapp",
+              "host": "*"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
+    },
+    "web": {
+      "favicon": "./app/assets/favicon.png"
+    },
+    "scheme": "myapp"
   }
 }
