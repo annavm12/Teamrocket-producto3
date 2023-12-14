@@ -1,40 +1,37 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  View,
-  FlatList,
-  StyleSheet,
-  Text,
-  StatusBar,
-} from 'react-native';
+import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image } from 'react-native';
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-];
+const sunIcon = require('../assets/icons/sun.png');
+const moonIcon = require('../assets/icons/moon.png');
 
-const Item = ({title}) => (
-  <View style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
-  </View>
-);
+const Item = ({ city, dayNumber, resume, time }) => {
+  const icon = time === 'Mañana' ? sunIcon : moonIcon;
 
-const FlatListDias = () => {
+  return (
+    <View style={styles.item}>
+      <View style={styles.itemContent}>
+        <Text style={styles.city}>{city}</Text>
+        <Text style={styles.dayNumber}>Día {dayNumber}</Text>
+        <Text style={styles.resume}>{resume}</Text>
+      </View>
+      <Image source={icon} style={styles.icon} />
+    </View>
+  );
+};
+
+const FlatListDias = ({ data }) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={DATA}
-        renderItem={({item}) => <Item title={item.title} />}
+        data={data}
+        renderItem={({ item }) => (
+          <Item
+            city={item.city}
+            dayNumber={item.dayNumber}
+            resume={item.resume}
+            time={item.time}
+          />
+        )}
         keyExtractor={item => item.id}
       />
     </SafeAreaView>
@@ -51,9 +48,26 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  title: {
-    fontSize: 32,
+  itemContent: {
+    flex: 1,
+  },
+  city: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  dayNumber: {
+    fontSize: 14,
+  },
+  resume: {
+    fontSize: 12,
+  },
+  icon: {
+    width: 30,
+    height: 30,
   },
 });
 

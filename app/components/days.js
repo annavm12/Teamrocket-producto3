@@ -1,7 +1,20 @@
-import react from "react";
-import { View, Text, StyleSheet} from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet } from 'react-native';
 
-const days = ({ data }) => {
+const Days = ({ data }) => {
+  return (
+    <View style={styles.container}>
+      {data.map((day, index) => (
+        <Text key={index}>{day.title}</Text>
+      ))}
+    </View>
+  );
+};
 
-}
-export default days;
+const styles = StyleSheet.create({
+  container: {
+    // Estilos para tu componente
+  }
+});
+
+export default Days;

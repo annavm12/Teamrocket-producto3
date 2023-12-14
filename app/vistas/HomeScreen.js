@@ -1,8 +1,9 @@
-// Homescreen.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, Picker, TextInput, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { collection, getDocs } from "firebase/firestore";
+import { db, app } from '../utils/Firebase';
+
 import { useNavigation } from '@react-navigation/native';
 import FlatListDias from '../components/flatList';
 import Formulario from '../components/formulario';
@@ -24,14 +25,14 @@ const Homescreen = () => {
   useEffect(() => {
     const fetchDataFromFirebase = async () => {
       try {
-        const querySnapshot = await firebase.firestore().collection('').get();
+        const querySnapshot = await getDocs(collection(db, "misviajes"));
         const fetchedData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setData(fetchedData);
       } catch (error) {
         console.error('Error al obtener datos de Firebase:', error);
       }
     };
-
+  
     fetchDataFromFirebase();
   }, []);
 
@@ -61,9 +62,9 @@ const Homescreen = () => {
         <Text style={styles.buttonText}>Crear Nuevo Día</Text>
       </TouchableOpacity>
 
-      <Formulario visible={formularioVisible} onClose={handleCloseFormulario} />
+      <FlatListDias data={data}></FlatListDias>
 
-      <FlatListDias></FlatListDias>
+      <Formulario visible={formularioVisible} onClose={handleCloseFormulario} />
         
     </View>
   );
