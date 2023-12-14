@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   SafeAreaView,
   View,
@@ -6,50 +6,44 @@ import {
   StyleSheet,
   Text,
   StatusBar,
-} from 'react-native';
+  Image,
+  Button,
+} from "react-native";
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'Madrid',
-    description: 'Capital of Spain',
-    population: 3223000,
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Barcelona',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Sevilla',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d73',
-    title: 'Cadiz',
-  },
-];
+const sunIcon = require("../assets/icons/sun.png");
+const moonIcon = require("../assets/icons/moon.png");
 
-const Item = ({title}) => (
-  <View style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
-  </View>
-);
+const Item = ({ city, dayNumber, resume, time }) => {
+  const icon = time === "Mañana" ? sunIcon : moonIcon;
 
-const Item2 = ({description}) => (
-  <View style={styles.item}>
-    <Text style={styles.description}>{description}</Text>
-  </View>
-);
+  return (
+    <View style={styles.item}>
+      <View style={styles.itemContent}>
+        <Text style={styles.city}>{city}</Text>
+        <Text style={styles.dayNumber}>Día {dayNumber}</Text>
+        <Text style={styles.resume}>{resume}</Text>
+      </View>
+      <Image source={icon} style={styles.icon} />
+    </View>
+  );
+};
 
-const FlatListDias = () => {
+const FlatListDias = ({ data, onPressButton }) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={DATA}
-        renderItem={({item}) => <Item title={item.title} />}
-        renderItem2={({item}) => <Item2 title={item.title} />}
-        keyExtractor={item => item.id}
+        data={data}
+        renderItem={({ item }) => (
+          <Item
+            city={item.city}
+            dayNumber={item.dayNumber}
+            resume={item.resume}
+            time={item.time}
+          />
+        )}
+        keyExtractor={(item) => item.id}
       />
+      <Button title="INFO" onPress={onPressButton} />
     </SafeAreaView>
   );
 };
@@ -60,13 +54,30 @@ const styles = StyleSheet.create({
     marginTop: StatusBar.currentHeight || 0,
   },
   item: {
-    backgroundColor: '#f9c2ff',
+    backgroundColor: "#f9c2ff",
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
-  title: {
-    fontSize: 32,
+  itemContent: {
+    flex: 1,
+  },
+  city: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  dayNumber: {
+    fontSize: 14,
+  },
+  resume: {
+    fontSize: 12,
+  },
+  icon: {
+    width: 30,
+    height: 30,
   },
 });
 

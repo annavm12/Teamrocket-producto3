@@ -1,21 +1,17 @@
-// Navegador.js
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-//import Home from './index';
-import NuevoDiaScreen from '../vistas/NuevoDiaScreen';
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import HomeScreen from "../vistas/HomeScreen";
+import Screen2 from "../vistas/Screen2.js";
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
-const AppNavigator = () => {
+const Navigation = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={index} />
-        <Stack.Screen name="NuevoDia" component={NuevoDiaScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="prueba" component={Screen2} />
+    </Stack.Navigator>
   );
 };
 
-export default AppNavigator;
+export default Navigation;
