@@ -38,6 +38,7 @@ const Homescreen = () => {
 
   return (
     <View style={styles.container}>
+      {/* Sección del título */}
       <Text style={styles.title}>Mi Viaje por España</Text>
       <Image
         style={styles.image}
