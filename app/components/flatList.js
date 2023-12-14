@@ -1,11 +1,19 @@
 import React from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image } from 'react-native';
+import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
 
 const sunIcon = require('../assets/icons/sun.png');
 const moonIcon = require('../assets/icons/moon.png');
 
 const Item = ({ city, dayNumber, resume, time }) => {
   const icon = time === 'Mañana' ? sunIcon : moonIcon;
+  const navigation = useNavigation();
+
+  const handleInfoButtonPress = () => {
+    // Navegar a la pantalla Screen2
+    navigation.navigate('Screen2');
+  };
 
   return (
     <View style={styles.item}>
@@ -14,6 +22,9 @@ const Item = ({ city, dayNumber, resume, time }) => {
         <Text style={styles.dayNumber}>Día {dayNumber}</Text>
         <Text style={styles.resume}>{resume}</Text>
       </View>
+      <TouchableOpacity style={styles.infoButton} onPress={handleInfoButtonPress}>
+        <Text style={styles.infoButtonText}>Info</Text>
+      </TouchableOpacity>
       <Image source={icon} style={styles.icon} />
     </View>
   );
@@ -54,6 +65,15 @@ const styles = StyleSheet.create({
   },
   itemContent: {
     flex: 1,
+  },
+  infoButton: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 5,
+  },
+  infoButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   city: {
     fontSize: 16,

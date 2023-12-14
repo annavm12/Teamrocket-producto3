@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import FlatListDias from '../components/flatList';
 import Formulario from '../components/formulario';
 
-const Homescreen = () => {
+const HomeScreen = () => {
     const navigation = useNavigation();
 
     const [formularioVisible, setFormularioVisible] = useState(false);
@@ -127,4 +127,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Homescreen;
+export default HomeScreen;
