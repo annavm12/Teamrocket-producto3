@@ -70,7 +70,7 @@ const HomeScreen = () => {
 
             <FlatListDias
                 data={filteredData}
-                onPressItem={(itemId) => navigation.navigate('DiaDetalle', { itemId })}
+                onPressItem={(itemId) => navigation.navigate('Screen2', { itemId })}
             />
         </View>
     );

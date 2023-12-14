@@ -1,46 +1,37 @@
 import React from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-
 
 const sunIcon = require('../assets/icons/sun.png');
 const moonIcon = require('../assets/icons/moon.png');
 
-const Item = ({ city, dayNumber, resume, time }) => {
+const Item = ({ id, city, dayNumber, resume, time, onPressItem }) => {
   const icon = time === 'Mañana' ? sunIcon : moonIcon;
-  const navigation = useNavigation();
-
-  const handleInfoButtonPress = () => {
-    // Navegar a la pantalla Screen2
-    navigation.navigate('Screen2');
-  };
 
   return (
-    <View style={styles.item}>
+    <TouchableOpacity style={styles.item} onPress={() => onPressItem(id)}>
       <View style={styles.itemContent}>
         <Text style={styles.city}>{city}</Text>
         <Text style={styles.dayNumber}>Día {dayNumber}</Text>
         <Text style={styles.resume}>{resume}</Text>
       </View>
-      <TouchableOpacity style={styles.infoButton} onPress={handleInfoButtonPress}>
-        <Text style={styles.infoButtonText}>Info</Text>
-      </TouchableOpacity>
       <Image source={icon} style={styles.icon} />
-    </View>
+    </TouchableOpacity>
   );
 };
 
-const FlatListDias = ({ data }) => {
+const FlatListDias = ({ data, onPressItem }) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         data={data}
         renderItem={({ item }) => (
           <Item
+            id={item.id}
             city={item.city}
             dayNumber={item.dayNumber}
             resume={item.resume}
             time={item.time}
+            onPressItem={onPressItem}
           />
         )}
         keyExtractor={item => item.id}
