@@ -11,15 +11,21 @@ import {
 const DATA = [
   {
     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
+    title: 'Madrid',
+    description: 'Capital of Spain',
+    population: 3223000,
   },
   {
     id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
+    title: 'Barcelona',
   },
   {
     id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
+    title: 'Sevilla',
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d73',
+    title: 'Cadiz',
   },
 ];
 
@@ -29,12 +35,19 @@ const Item = ({title}) => (
   </View>
 );
 
+const Item2 = ({description}) => (
+  <View style={styles.item}>
+    <Text style={styles.description}>{description}</Text>
+  </View>
+);
+
 const FlatListDias = () => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         data={DATA}
         renderItem={({item}) => <Item title={item.title} />}
+        renderItem2={({item}) => <Item2 title={item.title} />}
         keyExtractor={item => item.id}
       />
     </SafeAreaView>

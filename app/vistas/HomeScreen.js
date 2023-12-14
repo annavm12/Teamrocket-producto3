@@ -1,16 +1,23 @@
 // Homescreen.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, Picker, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Picker, TextInput, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import FlatListDias from '../components/flatList';
+import Formulario from '../components/formulario';
 
 const Homescreen = () => {
-  const navigation = useNavigation();
-  const handleCrearNuevoDia = () => {
-    navigation.navigate('NuevoDia');
-  };
+
+    const navigation = useNavigation();
+    const [formularioVisible, setFormularioVisible] = useState(false);
+    const handleCrearNuevoDia = () => {
+        setFormularioVisible(true);
+      };
+    
+      const handleCloseFormulario = () => {
+        setFormularioVisible(false);
+      };
 
   const [data, setData] = useState([]);
 
@@ -53,6 +60,8 @@ const Homescreen = () => {
       <TouchableOpacity style={styles.button} onPress={handleCrearNuevoDia}>
         <Text style={styles.buttonText}>Crear Nuevo Día</Text>
       </TouchableOpacity>
+
+      <Formulario visible={formularioVisible} onClose={handleCloseFormulario} />
 
       <FlatListDias></FlatListDias>
         
