@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, ScrollView, StyleSheet } from 'react-native';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../utils/Firebase';
 
-const Screen2 = ({ route, navigation }) => {
+const Screen2 = ({ route }) => {
     const [dayDetail, setDayDetail] = useState(null);
     const { itemId } = route.params;
 
@@ -26,65 +26,71 @@ const Screen2 = ({ route, navigation }) => {
         return <Text style={styles.loadingText}>Cargando...</Text>;
     }
 
-    const handleVideoPress = () => {
-        navigation.navigate('VideoScreen', { videoUrl: dayDetail.video });
-    };
+    // Asegúrate de que los campos coincidan con los de tu base de datos
+    const { info } = dayDetail;
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>{dayDetail.title}</Text>
-            <View style={styles.infoBox}>
-                <Text style={styles.detailText}>Ciudad: {dayDetail.city}</Text>
-                <Text style={styles.detailText}>Día Número: {dayDetail.dayNumber}</Text>
-                <Text style={styles.detailText}>Descripción: {dayDetail.description}</Text>
-                <Text style={styles.detailText}>Hotel: {dayDetail.hotel}</Text>
-                <Text style={styles.detailText}>Actividades: {dayDetail.text}</Text>
-                <Text style={styles.detailText}>Resumen: {dayDetail.resume}</Text>
-                <Text style={styles.detailText}>Horario: {dayDetail.time}</Text>
-            </View>
+        <ScrollView style={styles.container}>
+            <View style={styles.card}>
+                <Text style={styles.header}>{info?.title || 'Título no disponible'}</Text>
+                <Text style={styles.label}>Ciudad:</Text>
+                <Text style={styles.value}>{dayDetail.city}</Text>
+                <Text style={styles.label}>Día Número:</Text>
+                <Text style={styles.value}>{dayDetail.dayNumber}</Text>
+                <Text style={styles.label}>Descripción:</Text>
+                <Text style={styles.value}>{info?.description || 'Descripción no disponible'}</Text>
+                <Text style={styles.label}>Hotel:</Text>
+                <Text style={styles.value}>{info?.hotel || 'Hotel no disponible'}</Text>
+                <Text style={styles.label}>Actividades:</Text>
+                <Text style={styles.value}>{info?.text || 'Actividades no disponibles'}</Text>
+                <Text style={styles.label}>Resumen:</Text>
+                <Text style={styles.value}>{dayDetail.resume}</Text>
+                <Text style={styles.label}>Horario:</Text>
+                <Text style={styles.value}>{dayDetail.time}</Text>
 
-            <View style={styles.buttonContainer}>
-                <Button title="Ver Video" onPress={handleVideoPress} color="#007bff" />
+                <Button title="Ver Video" onPress={() => {}} color="#007bff" />
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+        backgroundColor: '#f0f0f0',
+    },
+    card: {
+        backgroundColor: '#ffffff',
+        borderRadius: 8,
         padding: 20,
-        backgroundColor: '#fff',
+        margin: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 1.41,
+        elevation: 2,
+    },
+    header: {
+        fontSize: 22,
+        color: '#000',
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    label: {
+        fontSize: 16,
+        color: '#555',
+        fontWeight: 'bold',
+        marginTop: 8,
+    },
+    value: {
+        fontSize: 16,
+        color: '#333',
+        marginBottom: 8,
     },
     loadingText: {
         fontSize: 18,
         textAlign: 'center',
         marginTop: 20,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        textAlign: 'center',
-    },
-    infoBox: {
-        padding: 15,
-        backgroundColor: '#f9f9f9',
-        borderRadius: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-        elevation: 3,
-        marginBottom: 15,
-    },
-    detailText: {
-        fontSize: 16,
-        marginBottom: 5,
-    },
-    buttonContainer: {
-        marginTop: 20,
-        width: '60%',
-        alignSelf: 'center',
     },
 });
 
