@@ -26,6 +26,8 @@ const HomeScreen = () => {
       };
 
   const [data, setData] = useState([]);
+  const [filter, setFilter] = useState('Todo');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchDataFromFirebase = async () => {
@@ -41,25 +43,39 @@ const HomeScreen = () => {
     fetchDataFromFirebase();
   }, []);
 
+  const filteredData = data.filter(item => 
+    (filter === 'Todo' || item.time === filter) &&
+    item.city.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <View style={styles.container}>
-      {/* Sección del título */}
-      <Text style={styles.title}>Mi Viaje por España</Text>
-      <Image
-        style={styles.image}
-        source={require('../assets/images/logo.png')}
-      />
+      <View style={styles.headerContainer}>
+        <Image
+          style={styles.image}
+          source={require('../assets/images/logo.png')}
+        />
+        <Text style={styles.title}>Mi Viaje por España</Text>
+      </View>
 
       <View style={styles.searchContainer}>
-        <Text>Buscar: </Text>
         <TextInput
           style={styles.input}
-          placeholder="Escribe aquí"
+          placeholder="Buscar por ciudad"
+          value={searchQuery}
+          onChangeText={text => setSearchQuery(text)}
         />
-        <Picker>
-          <Picker.Item label="Opción 1" value="opcion1" />
-          <Picker.Item label="Opción 2" value="opcion2" />
-          <Picker.Item label="Opción 3" value="opcion3" />
+      </View>
+
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={filter}
+          onValueChange={(itemValue, itemIndex) => setFilter(itemValue)}
+          style={styles.picker}
+        >
+          <Picker.Item label="Todo el día" value="Todo" />
+          <Picker.Item label="Solo mañana" value="Mañana" />
+          <Picker.Item label="Solo tarde" value="Tarde" />
         </Picker>
       </View>
 
@@ -82,22 +98,26 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: 'white',
     padding: 20,
+  },
+  headerContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
   },
   searchContainer: {
-    marginTop: 20,
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 20,
   },
   image: {
     width: 100,
     height: 100,
-    marginTop: 20,
   },
   input: {
     flex: 1,
@@ -106,24 +126,23 @@ const styles = StyleSheet.create({
     marginRight: 10,
     paddingHorizontal: 10,
   },
+  pickerContainer: {
+    width: '50%',
+    alignSelf: 'center',
+  },
+  picker: {
+    width: '100%',
+  },
   button: {
-    marginTop: 20,
     backgroundColor: 'blue',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
+    marginTop: 20,
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
-  },
-  card: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 16,
-    marginVertical: 8,
-    marginHorizontal: 16,
   },
 });
 
