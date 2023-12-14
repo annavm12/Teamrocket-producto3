@@ -3,7 +3,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Home from './index';
-import NuevoDiaScreen from '../app/vistas/NuevoDiaScreen';
+import NuevoDiaScreen from '../vistas/NuevoDiaScreen';
 
 const Stack = createStackNavigator();
 

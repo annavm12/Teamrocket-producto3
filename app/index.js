@@ -43,7 +43,7 @@ const Home = () => {
       <Text style={styles.title}>Mi Viaje por España</Text>
       <Image
         style={styles.image}
-        source={require('../assets/images/logo.png')}
+        source={require('./assets/images/logo.png')}
       />
 
       <View style={styles.searchContainer}>
