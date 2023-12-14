@@ -3,14 +3,15 @@ import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'reac
 import { Picker } from '@react-native-picker/picker';
 import { collection, getDocs } from "firebase/firestore";
 import { db, app } from '../utils/Firebase';
-
 import { useNavigation } from '@react-navigation/native';
+
+
 import FlatListDias from '../components/flatList';
 import Formulario from '../components/formulario';
 
 const Homescreen = () => {
-
     const navigation = useNavigation();
+
     const [formularioVisible, setFormularioVisible] = useState(false);
     const handleCrearNuevoDia = () => {
         setFormularioVisible(true);
@@ -18,6 +19,10 @@ const Homescreen = () => {
     
       const handleCloseFormulario = () => {
         setFormularioVisible(false);
+      };
+      const handleItemPress = (itemId) => {
+        // Navegar a la pantalla de detalle con el ID del elemento
+        navigation.navigate('Screen2', { itemId });
       };
 
   const [data, setData] = useState([]);
@@ -62,7 +67,12 @@ const Homescreen = () => {
         <Text style={styles.buttonText}>Crear Nuevo Día</Text>
       </TouchableOpacity>
 
-      <FlatListDias data={data}></FlatListDias>
+      <FlatListDias data={data} keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleItemPress(item.id)}>
+            <Text>{item.nombre}</Text>
+          </TouchableOpacity>
+        )}/>
 
       <Formulario visible={formularioVisible} onClose={handleCloseFormulario} />
         
