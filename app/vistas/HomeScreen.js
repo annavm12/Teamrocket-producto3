@@ -3,14 +3,22 @@ import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'reac
 import { Picker } from '@react-native-picker/picker';
 import { collection, getDocs } from "firebase/firestore";
 import { db, app } from '../utils/Firebase';
+
 import { useNavigation } from '@react-navigation/native';
 import FlatListDias from '../components/flatList';
+import Formulario from '../components/formulario';
 
 const Homescreen = () => {
-  const navigation = useNavigation();
-  const handleCrearNuevoDia = () => {
-    navigation.navigate('NuevoDia');
-  };
+
+    const navigation = useNavigation();
+    const [formularioVisible, setFormularioVisible] = useState(false);
+    const handleCrearNuevoDia = () => {
+        setFormularioVisible(true);
+      };
+    
+      const handleCloseFormulario = () => {
+        setFormularioVisible(false);
+      };
 
   const [data, setData] = useState([]);
 
@@ -55,6 +63,8 @@ const Homescreen = () => {
       </TouchableOpacity>
 
       <FlatListDias data={data}></FlatListDias>
+
+      <Formulario visible={formularioVisible} onClose={handleCloseFormulario} />
         
     </View>
   );
