@@ -1,147 +1,261 @@
 import React, { useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput, TouchableOpacity, Picker } from 'react-native';
-import firestore from '@react-native-firebase/firestore';
-import {bd, app } from '../utils/Firebase';
-
+import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput, TouchableOpacity, Platform } from 'react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { Picker } from '@react-native-picker/picker';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from '../utils/Firebase';
 
 const Formulario = ({ visible, onClose }) => {
   const [city, setCity] = useState('');
   const [dayNumber, setDayNumber] = useState('');
-  const [info, setInfo] = useState({ description: '', hotel: '', text: '', title: '', video: '', resume: '', time: 'Mañana' });
+  const [videoFile, setVideoFile] = useState(null);
+  const [videoFileName, setVideoFileName] = useState('');
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [info, setInfo] = useState({ description: '', hotel: '', text: '', title: '', resume: '', time: 'Mañana' });
 
   const handleInputChange = (field, text) => {
-    switch (field) {
-      case 'city':
-        setCity(text);
-        break;
-      case 'dayNumber':
-        setDayNumber(text);
-        break;
-      case 'description':
-      case 'hotel':
-      case 'text':
-      case 'title':
-      case 'video':
-      case 'resume':
-      case 'time':
-        setInfo((prevInfo) => ({ ...prevInfo, [field]: text }));
-        break;
-      default:
-        break;
+    if (field === 'city') {
+      setCity(text);
+    } else if (field === 'dayNumber') {
+      setDayNumber(text);
+    } else {
+      setInfo((prevInfo) => ({ ...prevInfo, [field]: text }));
     }
   };
-  
+
+  const selectVideo = () => {
+    if (Platform.OS === 'web') {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'video/*';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const source = { uri: URL.createObjectURL(file) };
+          setVideoFile(source);
+          setVideoFileName(file.name);
+          setShowConfirmationModal(true);
+        }
+      };
+      input.click();
+    } else {
+      const options = {
+        mediaType: 'video',
+        quality: 1,
+      };
+
+      launchImageLibrary(options, (response) => {
+        if (response.didCancel) {
+          console.log('User cancelled video picker');
+        } else if (response.errorCode) {
+          console.log('ImagePicker Error: ', response.errorMessage);
+        } else if (response.assets && response.assets[0]) {
+          const source = { uri: response.assets[0].uri };
+          setVideoFile(source);
+          setVideoFileName(response.assets[0].fileName);
+          setShowConfirmationModal(true);
+        }
+      });
+    }
+  };
+
+  const uploadVideo = async () => {
+    if (!videoFile || !videoFile.uri) {
+      Alert.alert('Error', 'No video file selected');
+      return null;
+    }
+
+    const uploadUri = videoFile.uri;
+    let filename = uploadUri.substring(uploadUri.lastIndexOf('/') + 1);
+    const storageRef = ref(getStorage(), `videos/${filename}`);
+
+    try {
+      const response = await fetch(uploadUri);
+      const blob = await response.blob();
+      await uploadBytes(storageRef, blob);
+      return await getDownloadURL(storageRef);
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  };
+
   const handleSubmit = async () => {
     try {
-      // Guarda la información en Firestore
-      await firestore().collection(bd).add({
+      if (!videoFile) {
+        Alert.alert('Error', 'Por favor, selecciona un video primero.');
+        return;
+      }
+
+      const videoUrl = await uploadVideo();
+      if (!videoUrl) {
+        Alert.alert('Error', 'No se pudo subir el video');
+        return;
+      }
+
+      const dayData = {
         city,
         dayNumber: parseInt(dayNumber, 10),
-        info,
-      });
-  
-      // Muestra un mensaje de éxito
-      Alert.alert('Formulario enviado', 'Información guardada en Firestore correctamente');
+        resume: info.resume,
+        time: info.time,
+        info: {
+          title: info.title,
+          hotel: info.hotel,
+          text: info.text,
+          description: info.description,
+          video: videoUrl
+        }
+      };
+
+      await addDoc(collection(db, "misviajes"), dayData);
+      setShowSuccessModal(true);
+      reloadData();
     } catch (error) {
       console.error('Error al guardar en Firestore:', error);
-      // Muestra un mensaje de error
       Alert.alert('Error', 'No se pudo guardar la información en Firestore');
     }
-  
-    // Cierra el modal
+  };
+
+  const resetForm = () => {
+    setCity('');
+    setDayNumber('');
+    setInfo({ description: '', hotel: '', text: '', title: '', resume: '', time: 'Mañana' });
+    setVideoFile(null);
+    setVideoFileName('');
+    setShowConfirmationModal(false);
+    setShowSuccessModal(false);
     onClose();
   };
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>Crear Nuevo Día</Text>
+    <>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={visible}
+        onRequestClose={onClose}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Crear Nuevo Día</Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Ciudad"
-            value={city}
-            onChangeText={(text) => handleInputChange('city', text)}
-          />
+            <TextInput
+              style={styles.input}
+              placeholder="Ciudad"
+              value={city}
+              onChangeText={(text) => handleInputChange('city', text)}
+            />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Número de día"
-            value={dayNumber}
-            onChangeText={(text) => handleInputChange('dayNumber', text)}
-            keyboardType="numeric"
-          />
+            <TextInput
+              style={styles.input}
+              placeholder="Número de día"
+              value={dayNumber}
+              onChangeText={(text) => handleInputChange('dayNumber', text)}
+              keyboardType="numeric"
+            />
 
-          {/* Campos de info (map) */}
-          <TextInput
-            style={styles.input}
-            placeholder="Descripción"
-            value={info.description}
-            onChangeText={(text) => handleInputChange('description', text)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Hotel"
-            value={info.hotel}
-            onChangeText={(text) => handleInputChange('hotel', text)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Actividades"
-            value={info.text}
-            onChangeText={(text) => handleInputChange('text', text)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Título"
-            value={info.title}
-            onChangeText={(text) => handleInputChange('title', text)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Archivo"
-            value={info.video}
-            onChangeText={(text) => handleInputChange('video', text)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Resumen"
-            value={info.resume}
-            onChangeText={(text) => handleInputChange('resume', text)}
-          />
-          <Picker
-            selectedValue={info.time}
-            style={{ height: 40, width: '100%' }}
-            onValueChange={(itemValue) => handleInputChange('time', itemValue)}
-          >
-            <Picker.Item label="Mañana" value="Mañana" />
-            <Picker.Item label="Tarde" value="Tarde" />
-          </Picker>
+            {/* Campos de información */}
+            <TextInput
+              style={styles.input}
+              placeholder="Descripción"
+              value={info.description}
+              onChangeText={(text) => handleInputChange('description', text)}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Hotel"
+              value={info.hotel}
+              onChangeText={(text) => handleInputChange('hotel', text)}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Actividades"
+              value={info.text}
+              onChangeText={(text) => handleInputChange('text', text)}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Título"
+              value={info.title}
+              onChangeText={(text) => handleInputChange('title', text)}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Resumen"
+              value={info.resume}
+              onChangeText={(text) => handleInputChange('resume', text)}
+            />
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleSubmit}
-          >
-            <Text style={styles.buttonText}>Crear</Text>
-          </TouchableOpacity>
-          <Pressable
-            style={styles.closeButton}
-            onPress={onClose}
-          >
-            <Text style={styles.closeButtonText}>Cancelar</Text>
-          </Pressable>
+            <Picker
+              selectedValue={info.time}
+              style={styles.picker}
+              onValueChange={(itemValue) => handleInputChange('time', itemValue)}
+            >
+              <Picker.Item label="Mañana" value="Mañana" />
+              <Picker.Item label="Tarde" value="Tarde" />
+            </Picker>
+
+            <TouchableOpacity onPress={selectVideo} style={styles.button}>
+              <Text style={styles.buttonText}>Seleccionar Video</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+              <Text style={styles.buttonText}>Crear</Text>
+            </TouchableOpacity>
+
+            <Pressable style={styles.closeButton} onPress={onClose}>
+              <Text style={styles.closeButtonText}>Cancelar</Text>
+            </Pressable>
+          </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+
+      {/* Modal de Confirmación de Video */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showConfirmationModal}
+        onRequestClose={() => setShowConfirmationModal(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Video seleccionado: {videoFileName}</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setShowConfirmationModal(false)}
+            >
+              <Text style={styles.textStyle}>Cerrar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal de Confirmación de Éxito */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showSuccessModal}
+        onRequestClose={() => setShowSuccessModal(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Día creado correctamente</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={resetForm}
+            >
+              <Text style={styles.textStyle}>Cerrar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+    </>
   );
 };
 
+// Estilos
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
@@ -178,6 +292,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     width: "100%",
   },
+  picker: {
+    height: 40,
+    width: "100%",
+    marginBottom: 20,
+  },
   button: {
     backgroundColor: "blue",
     padding: 10,
@@ -200,6 +319,13 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: "white",
     fontWeight: "bold",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    textAlign: "center",
   },
 });
 

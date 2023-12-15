@@ -7,43 +7,42 @@ import { useNavigation } from '@react-navigation/native';
 import FlatListDias from '../components/flatList';
 import Formulario from '../components/formulario';
 
-
 const HomeScreen = () => {
     const navigation = useNavigation();
     const [data, setData] = useState([]);
     const [filter, setFilter] = useState('Todo');
     const [searchQuery, setSearchQuery] = useState('');
+    const [formularioVisible, setFormularioVisible] = useState(false);
+    const [refreshCounter, setRefreshCounter] = useState(0); // Nuevo contador para forzar actualizaciones
+
+    const fetchDataFromFirebase = async () => {
+        try {
+            const querySnapshot = await getDocs(collection(db, "misviajes"));
+            let fetchedData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            fetchedData.sort((a, b) => a.dayNumber - b.dayNumber);
+            setData(fetchedData);
+        } catch (error) {
+            console.error('Error al obtener datos de Firebase:', error);
+        }
+    };
 
     useEffect(() => {
-        const fetchDataFromFirebase = async () => {
-            try {
-                const querySnapshot = await getDocs(collection(db, "misviajes"));
-                let fetchedData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                // Ordenar los datos por número de día de forma ascendente
-                fetchedData.sort((a, b) => a.dayNumber - b.dayNumber);
-                setData(fetchedData);
-            } catch (error) {
-                console.error('Error al obtener datos de Firebase:', error);
-            }
-        };
-
         fetchDataFromFirebase();
-    }, []);
-    const [formularioVisible, setFormularioVisible] = useState(false);
+    }, [refreshCounter]); // Dependencia del contador
+
     const handleCrearNuevoDia = () => {
         setFormularioVisible(true);
-      };
-    
-      const handleCloseFormulario = () => {
+    };
+
+    const handleCloseFormulario = () => {
         setFormularioVisible(false);
-      };
-    
+        setRefreshCounter(prev => prev + 1); // Incrementa el contador para forzar la actualización
+    };
+
     const filteredData = data.filter(item =>
         (filter === 'Todo' || item.time === filter) &&
         item.city.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
-
 
     return (
         <View style={styles.container}>
@@ -67,7 +66,7 @@ const HomeScreen = () => {
             <View style={styles.pickerContainer}>
                 <Picker
                     selectedValue={filter}
-                    onValueChange={(itemValue, itemIndex) => setFilter(itemValue)}
+                    onValueChange={(itemValue) => setFilter(itemValue)}
                     style={styles.picker}
                 >
                     <Picker.Item label="Todo el día" value="Todo" />
@@ -77,8 +76,8 @@ const HomeScreen = () => {
             </View>
 
             <TouchableOpacity style={styles.button} onPress={handleCrearNuevoDia}>
-        <Text style={styles.buttonText}>Crear Nuevo Día</Text>
-      </TouchableOpacity>
+                <Text style={styles.buttonText}>Crear Nuevo Día</Text>
+            </TouchableOpacity>
 
             <FlatListDias
                 data={filteredData}
