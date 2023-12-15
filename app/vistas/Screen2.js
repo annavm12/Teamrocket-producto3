@@ -28,7 +28,6 @@ const Screen2 = ({ route }) => {
         return <Text style={styles.loadingText}>Cargando...</Text>;
     }
 
-    // Asegúrate de que los campos coincidan con los de tu base de datos
     const { info } = dayDetail;
 
     const handleViewVideo = () => {

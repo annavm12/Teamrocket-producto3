@@ -12,17 +12,17 @@ const Navigation = () => {
             <Stack.Screen 
                 name="Home" 
                 component={HomeScreen} 
-                options={{ title: 'Inicio' }}  // Cambia "Home" por "Inicio"
+                options={{ title: 'Inicio' }} 
             />
             <Stack.Screen 
                 name="Screen2" 
                 component={Screen2} 
-                options={{ title: 'Detalles' }}  // Cambia "Screen2" por "Detalles"
+                options={{ title: 'Detalles' }} 
             />
             <Stack.Screen 
                 name="VideoPlayer" 
                 component={VideoPlayerScreen} 
-                options={{ title: 'Reproductor' }}  // Cambia "VideoPlayer" por "Reproductor"
+                options={{ title: 'Reproductor' }} 
             />
         </Stack.Navigator>
     );

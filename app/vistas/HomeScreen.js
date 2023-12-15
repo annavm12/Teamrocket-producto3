@@ -26,7 +26,7 @@ const HomeScreen = () => {
                 const querySnapshot = await getDocs(collection(db, "misviajes"));
                 let fetchedData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 fetchedData.sort((a, b) => a.dayNumber - b.dayNumber);
-                console.log("Datos recuperados:", fetchedData); // Para inspeccionar los datos
+                console.log("Datos recuperados:", fetchedData); 
                 setData(fetchedData);
             } catch (error) {
                 console.error('Error al obtener datos de Firebase:', error);
@@ -135,7 +135,6 @@ const HomeScreen = () => {
 
             <Formulario visible={formularioVisible} onClose={handleCloseFormulario} />
 
-            {/* Modal de Confirmación de Eliminación */}
             <Modal
                 visible={isConfirmModalVisible}
                 transparent={true}
@@ -161,7 +160,6 @@ const HomeScreen = () => {
 };
 
 
-// Estilos
 const styles = StyleSheet.create({
     container: {
         flex: 1,

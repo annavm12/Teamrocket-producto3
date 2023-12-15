@@ -11,10 +11,4 @@ const Days = ({ data }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    // Estilos para tu componente
-  }
-});
-
 export default Days;

@@ -3,7 +3,7 @@ import { SafeAreaView, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOp
 
 const sunIcon = require('../assets/icons/sun.png');
 const moonIcon = require('../assets/icons/moon.png');
-const trashIcon = require('../assets/icons/trash.png'); // Icono de papelera
+const trashIcon = require('../assets/icons/trash.png'); 
 
 const Item = ({ id, city, dayNumber, resume, time, onPressItem, onDelete, onEdit }) => {
   const icon = time === 'Mañana' ? sunIcon : moonIcon;
@@ -40,7 +40,7 @@ const FlatListDias = ({ data, onPressItem, onDeleteItem, onEditItem }) => {
                       time={item.time}
                       onPressItem={onPressItem}
                       onDelete={onDeleteItem}
-                      onEdit={onEditItem} // Aquí pasamos onEditItem a cada Item
+                      onEdit={onEditItem} 
                   />
               )}
               keyExtractor={item => item.id}
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     marginTop: StatusBar.currentHeight || 0,
   },
   item: {
-    backgroundColor: 'white', // Fondo blanco
+    backgroundColor: 'white', 
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,

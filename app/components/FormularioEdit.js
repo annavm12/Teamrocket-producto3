@@ -19,20 +19,18 @@ const FormularioEdit = ({ visible, onClose, dayToEdit }) => {
     if (dayToEdit && dayToEdit.info) {
       setCity(dayToEdit.city || '');
       setDayNumber(dayToEdit.dayNumber ? dayToEdit.dayNumber.toString() : '');
-      
-      // Establecer los campos de info con valores predeterminados si no existen
+ 
       const updatedInfo = {
         title: dayToEdit.info.title || 'Título por defecto',
         hotel: dayToEdit.info.hotel || 'Hotel por defecto',
         text: dayToEdit.info.text || 'Texto por defecto',
         description: dayToEdit.info.description || 'Descripción por defecto',
-        video: dayToEdit.info.video || '', // Puedes dejar esto como una cadena vacía si no hay video
-        // Asegúrate de incluir otros campos que puedan faltar
+        video: dayToEdit.info.video || '', 
+
       };
   
       setInfo(updatedInfo);
   
-      // Establecer el archivo de video si existe
       if (dayToEdit.info.video) {
         setVideoFile({ uri: dayToEdit.info.video });
         setVideoFileName("Video actual"); 
@@ -41,7 +39,6 @@ const FormularioEdit = ({ visible, onClose, dayToEdit }) => {
         setVideoFileName('');
       }
     } else {
-      // Resetear el formulario si dayToEdit no tiene la estructura esperada
       resetForm();
     }
   }, [dayToEdit]);
@@ -142,13 +139,11 @@ const FormularioEdit = ({ visible, onClose, dayToEdit }) => {
       };
   
       if (dayToEdit && dayToEdit.id) {
-        // Actualizar el documento existente
         const docRef = doc(db, "misviajes", dayToEdit.id);
         await updateDoc(docRef, dayData);
         setShowSuccessModal(true);
         reloadData();
       } else {
-        // Manejar el error o la adición de un nuevo documento
         console.error("No se proporcionó un ID válido para la edición");
       }
     } catch (error) {
@@ -195,7 +190,6 @@ const FormularioEdit = ({ visible, onClose, dayToEdit }) => {
               keyboardType="numeric"
             />
 
-            {/* Campos de información */}
             <TextInput
               style={styles.input}
               placeholder="Descripción"
@@ -251,7 +245,6 @@ const FormularioEdit = ({ visible, onClose, dayToEdit }) => {
         </View>
       </Modal>
 
-      {/* Modal de Confirmación de Video */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -271,7 +264,6 @@ const FormularioEdit = ({ visible, onClose, dayToEdit }) => {
         </View>
       </Modal>
 
-      {/* Modal de Confirmación de Éxito */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -294,7 +286,6 @@ const FormularioEdit = ({ visible, onClose, dayToEdit }) => {
   );
 };
 
-// Estilos
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,

@@ -156,7 +156,6 @@ const Formulario = ({ visible, onClose }) => {
               keyboardType="numeric"
             />
 
-            {/* Campos de información */}
             <TextInput
               style={styles.input}
               placeholder="Descripción"
@@ -212,7 +211,6 @@ const Formulario = ({ visible, onClose }) => {
         </View>
       </Modal>
 
-      {/* Modal de Confirmación de Video */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -232,7 +230,6 @@ const Formulario = ({ visible, onClose }) => {
         </View>
       </Modal>
 
-      {/* Modal de Confirmación de Éxito */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -255,7 +252,6 @@ const Formulario = ({ visible, onClose }) => {
   );
 };
 
-// Estilos
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
