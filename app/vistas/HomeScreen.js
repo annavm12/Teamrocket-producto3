@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from '../utils/Firebase';
 import { useNavigation } from '@react-navigation/native';
 import FlatListDias from '../components/flatList';
@@ -13,22 +13,23 @@ const HomeScreen = () => {
     const [filter, setFilter] = useState('Todo');
     const [searchQuery, setSearchQuery] = useState('');
     const [formularioVisible, setFormularioVisible] = useState(false);
-    const [refreshCounter, setRefreshCounter] = useState(0); // Nuevo contador para forzar actualizaciones
-
-    const fetchDataFromFirebase = async () => {
-        try {
-            const querySnapshot = await getDocs(collection(db, "misviajes"));
-            let fetchedData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            fetchedData.sort((a, b) => a.dayNumber - b.dayNumber);
-            setData(fetchedData);
-        } catch (error) {
-            console.error('Error al obtener datos de Firebase:', error);
-        }
-    };
+    const [refreshCounter, setRefreshCounter] = useState(0);
+    const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
+    const [dayToDelete, setDayToDelete] = useState(null);
 
     useEffect(() => {
+        const fetchDataFromFirebase = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, "misviajes"));
+                let fetchedData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                fetchedData.sort((a, b) => a.dayNumber - b.dayNumber);
+                setData(fetchedData);
+            } catch (error) {
+                console.error('Error al obtener datos de Firebase:', error);
+            }
+        };
         fetchDataFromFirebase();
-    }, [refreshCounter]); // Dependencia del contador
+    }, [refreshCounter]);
 
     const handleCrearNuevoDia = () => {
         setFormularioVisible(true);
@@ -36,7 +37,30 @@ const HomeScreen = () => {
 
     const handleCloseFormulario = () => {
         setFormularioVisible(false);
-        setRefreshCounter(prev => prev + 1); // Incrementa el contador para forzar la actualización
+        setRefreshCounter(prev => prev + 1);
+    };
+
+    const handleDeleteDay = (id) => {
+        setDayToDelete(id);
+        setIsConfirmModalVisible(true);
+    };
+
+    const confirmDeletion = async () => {
+        if (dayToDelete) {
+            try {
+                await deleteDoc(doc(db, "misviajes", dayToDelete));
+                setRefreshCounter(prev => prev + 1);
+            } catch (error) {
+                console.error('Error al eliminar el día:', error);
+            }
+        }
+        setIsConfirmModalVisible(false);
+        setDayToDelete(null);
+    };
+
+    const cancelDeletion = () => {
+        setIsConfirmModalVisible(false);
+        setDayToDelete(null);
     };
 
     const filteredData = data.filter(item =>
@@ -82,14 +106,38 @@ const HomeScreen = () => {
             <FlatListDias
                 data={filteredData}
                 onPressItem={(itemId) => navigation.navigate('Screen2', { itemId })}
+                onDeleteItem={handleDeleteDay}
             />
 
             <Formulario visible={formularioVisible} onClose={handleCloseFormulario} />
 
+            {/* Modal de Confirmación de Eliminación */}
+            <Modal
+                visible={isConfirmModalVisible}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setIsConfirmModalVisible(false)}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>¿Estás seguro de que deseas eliminar este día?</Text>
+                        <View style={styles.modalButtonContainer}>
+                            <TouchableOpacity style={[styles.button, styles.deleteModalButton]} onPress={confirmDeletion}>
+                                <Text style={styles.buttonText}>Confirmar</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.button, styles.cancelModalButton]} onPress={cancelDeletion}>
+                                <Text style={styles.buttonText}>Cancelar</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
 
+
+// Estilos
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -133,10 +181,43 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         alignItems: 'center',
         marginTop: 20,
+        marginBottom: 10,
     },
     buttonText: {
         color: 'white',
         fontWeight: 'bold',
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    modalButtonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: 20,
+    },
+    deleteModalButton: {
+        backgroundColor: 'red',
+    },
+    cancelModalButton: {
+        backgroundColor: 'gray',
     },
 });
 

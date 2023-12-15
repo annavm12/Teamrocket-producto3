@@ -1,25 +1,29 @@
 import React from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity } from 'react-native';
+import { SafeAreaView, FlatList, StyleSheet, Text, StatusBar, Image, TouchableOpacity, View } from 'react-native';
 
 const sunIcon = require('../assets/icons/sun.png');
 const moonIcon = require('../assets/icons/moon.png');
+const trashIcon = require('../assets/icons/trash.png'); // Icono de papelera
 
-const Item = ({ id, city, dayNumber, resume, time, onPressItem }) => {
+const Item = ({ id, city, dayNumber, resume, time, onPressItem, onDelete }) => {
   const icon = time === 'Mañana' ? sunIcon : moonIcon;
 
   return (
-    <TouchableOpacity style={styles.item} onPress={() => onPressItem(id)}>
-      <View style={styles.itemContent}>
+    <View style={styles.item}>
+      <TouchableOpacity onPress={() => onPressItem(id)} style={styles.itemContent}>
         <Text style={styles.city}>{city}</Text>
         <Text style={styles.dayNumber}>Día {dayNumber}</Text>
         <Text style={styles.resume}>{resume}</Text>
-      </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => onDelete(id)} style={styles.deleteButton}>
+        <Image source={trashIcon} style={styles.trashIcon} />
+      </TouchableOpacity>
       <Image source={icon} style={styles.icon} />
-    </TouchableOpacity>
+    </View>
   );
 };
 
-const FlatListDias = ({ data, onPressItem }) => {
+const FlatListDias = ({ data, onPressItem, onDeleteItem }) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -32,6 +36,7 @@ const FlatListDias = ({ data, onPressItem }) => {
             resume={item.resume}
             time={item.time}
             onPressItem={onPressItem}
+            onDelete={onDeleteItem}
           />
         )}
         keyExtractor={item => item.id}
@@ -53,9 +58,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderRadius: 10, // Bordes redondeados
-
-    // Sombreado para efecto de flotación
+    borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -90,6 +93,18 @@ const styles = StyleSheet.create({
   icon: {
     width: 30,
     height: 30,
+  },
+  deleteButton: {
+    backgroundColor: 'red',
+    padding: 5,
+    borderRadius: 5,
+    marginLeft: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  trashIcon: {
+    width: 20,
+    height: 20,
   },
 });
 
