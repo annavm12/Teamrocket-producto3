@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Button, ScrollView, StyleSheet } from 'react-native';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../utils/Firebase';
+import { useNavigation } from '@react-navigation/native';
 
 const Screen2 = ({ route }) => {
+    const navigation = useNavigation();
     const [dayDetail, setDayDetail] = useState(null);
     const { itemId } = route.params;
 
@@ -29,6 +31,10 @@ const Screen2 = ({ route }) => {
     // Asegúrate de que los campos coincidan con los de tu base de datos
     const { info } = dayDetail;
 
+    const handleViewVideo = () => {
+        navigation.navigate('VideoPlayer', { videoURL: info?.video });
+    };
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.card}>
@@ -48,7 +54,7 @@ const Screen2 = ({ route }) => {
                 <Text style={styles.label}>Horario:</Text>
                 <Text style={styles.value}>{dayDetail.time}</Text>
 
-                <Button title="Ver Video" onPress={() => {}} color="#007bff" />
+                <Button title="Ver Video" onPress={handleViewVideo} color="#007bff" />
             </View>
         </ScrollView>
     );
