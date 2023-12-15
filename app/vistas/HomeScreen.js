@@ -6,6 +6,7 @@ import { db } from '../utils/Firebase';
 import { useNavigation } from '@react-navigation/native';
 import FlatListDias from '../components/flatList';
 import Formulario from '../components/formulario';
+import FormularioEdit from '../components/FormularioEdit';
 
 const HomeScreen = () => {
     const navigation = useNavigation();
@@ -16,6 +17,8 @@ const HomeScreen = () => {
     const [refreshCounter, setRefreshCounter] = useState(0);
     const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
     const [dayToDelete, setDayToDelete] = useState(null);
+    const [editFormVisible, setEditFormVisible] = useState(false);
+    const [dayToEdit, setDayToEdit] = useState(null);
 
     useEffect(() => {
         const fetchDataFromFirebase = async () => {
@@ -23,6 +26,7 @@ const HomeScreen = () => {
                 const querySnapshot = await getDocs(collection(db, "misviajes"));
                 let fetchedData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 fetchedData.sort((a, b) => a.dayNumber - b.dayNumber);
+                console.log("Datos recuperados:", fetchedData); // Para inspeccionar los datos
                 setData(fetchedData);
             } catch (error) {
                 console.error('Error al obtener datos de Firebase:', error);
@@ -37,6 +41,20 @@ const HomeScreen = () => {
 
     const handleCloseFormulario = () => {
         setFormularioVisible(false);
+        setRefreshCounter(prev => prev + 1);
+    };
+
+    const handleEditDay = (day) => {
+        if (day && day.info) {
+          setDayToEdit(day);
+          setEditFormVisible(true);
+        } else {
+          console.error("Datos del día incompletos o incorrectos", day);
+        }
+      };      
+    
+    const handleCloseEditForm = () => {
+        setEditFormVisible(false);
         setRefreshCounter(prev => prev + 1);
     };
 
@@ -107,6 +125,12 @@ const HomeScreen = () => {
                 data={filteredData}
                 onPressItem={(itemId) => navigation.navigate('Screen2', { itemId })}
                 onDeleteItem={handleDeleteDay}
+                onEditItem={handleEditDay}
+            />
+            <FormularioEdit
+                visible={editFormVisible}
+                onClose={handleCloseEditForm}
+                dayToEdit={dayToEdit}
             />
 
             <Formulario visible={formularioVisible} onClose={handleCloseFormulario} />

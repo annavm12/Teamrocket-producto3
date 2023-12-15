@@ -5,43 +5,47 @@ const sunIcon = require('../assets/icons/sun.png');
 const moonIcon = require('../assets/icons/moon.png');
 const trashIcon = require('../assets/icons/trash.png'); // Icono de papelera
 
-const Item = ({ id, city, dayNumber, resume, time, onPressItem, onDelete }) => {
+const Item = ({ id, city, dayNumber, resume, time, onPressItem, onDelete, onEdit }) => {
   const icon = time === 'Mañana' ? sunIcon : moonIcon;
 
   return (
     <View style={styles.item}>
-      <TouchableOpacity onPress={() => onPressItem(id)} style={styles.itemContent}>
-        <Text style={styles.city}>{city}</Text>
-        <Text style={styles.dayNumber}>Día {dayNumber}</Text>
-        <Text style={styles.resume}>{resume}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => onDelete(id)} style={styles.deleteButton}>
-        <Image source={trashIcon} style={styles.trashIcon} />
-      </TouchableOpacity>
-      <Image source={icon} style={styles.icon} />
+        <TouchableOpacity onPress={() => onPressItem(id)} style={styles.itemContent}>
+            <Text style={styles.city}>{city}</Text>
+            <Text style={styles.dayNumber}>Día {dayNumber}</Text>
+            <Text style={styles.resume}>{resume}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => onEdit({ id, city, dayNumber, resume, time })} style={styles.editButton}>
+            <Text style={styles.editButtonText}>Editar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => onDelete(id)} style={styles.deleteButton}>
+            <Image source={trashIcon} style={styles.trashIcon} />
+        </TouchableOpacity>
+        <Image source={icon} style={styles.icon} />
     </View>
-  );
+);
 };
 
-const FlatListDias = ({ data, onPressItem, onDeleteItem }) => {
+const FlatListDias = ({ data, onPressItem, onDeleteItem, onEditItem }) => {
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => (
-          <Item
-            id={item.id}
-            city={item.city}
-            dayNumber={item.dayNumber}
-            resume={item.resume}
-            time={item.time}
-            onPressItem={onPressItem}
-            onDelete={onDeleteItem}
+      <SafeAreaView style={styles.container}>
+          <FlatList
+              data={data}
+              renderItem={({ item }) => (
+                  <Item
+                      id={item.id}
+                      city={item.city}
+                      dayNumber={item.dayNumber}
+                      resume={item.resume}
+                      time={item.time}
+                      onPressItem={onPressItem}
+                      onDelete={onDeleteItem}
+                      onEdit={onEditItem} // Aquí pasamos onEditItem a cada Item
+                  />
+              )}
+              keyExtractor={item => item.id}
           />
-        )}
-        keyExtractor={item => item.id}
-      />
-    </SafeAreaView>
+      </SafeAreaView>
   );
 };
 
