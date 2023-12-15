@@ -5,6 +5,8 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from '../utils/Firebase';
 import { useNavigation } from '@react-navigation/native';
 import FlatListDias from '../components/flatList';
+import Formulario from '../components/formulario';
+
 
 const HomeScreen = () => {
     const navigation = useNavigation();
@@ -27,11 +29,21 @@ const HomeScreen = () => {
 
         fetchDataFromFirebase();
     }, []);
-
+    const [formularioVisible, setFormularioVisible] = useState(false);
+    const handleCrearNuevoDia = () => {
+        setFormularioVisible(true);
+      };
+    
+      const handleCloseFormulario = () => {
+        setFormularioVisible(false);
+      };
+    
     const filteredData = data.filter(item =>
         (filter === 'Todo' || item.time === filter) &&
         item.city.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+
 
     return (
         <View style={styles.container}>
@@ -64,14 +76,17 @@ const HomeScreen = () => {
                 </Picker>
             </View>
 
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('NuevoDia')}>
-                <Text style={styles.buttonText}>Crear Nuevo Día</Text>
-            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleCrearNuevoDia}>
+        <Text style={styles.buttonText}>Crear Nuevo Día</Text>
+      </TouchableOpacity>
 
             <FlatListDias
                 data={filteredData}
                 onPressItem={(itemId) => navigation.navigate('Screen2', { itemId })}
             />
+
+            <Formulario visible={formularioVisible} onClose={handleCloseFormulario} />
+
         </View>
     );
 };
